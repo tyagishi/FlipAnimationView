@@ -17,7 +17,7 @@ public class ClockViewModel: FlipViewSource {
     }
     
     func setupTimer() {
-        self.cancellable = Timer.TimerPublisher.init(interval: 0.7, tolerance: 0.3, runLoop: .main, mode: .common, options: nil)
+        self.cancellable = Timer.TimerPublisher.init(interval: 1.0, tolerance: 0.3, runLoop: .main, mode: .common, options: nil)
             .autoconnect()
             .sink { newValue in
                 let now = Int(Date().timeIntervalSinceReferenceDate)
