@@ -84,14 +84,14 @@ public struct SingleFlipView: View {
         VStack {
             VStack(spacing:0) {
                 ZStack {
-                    Image("\(nextIndex)up", bundle: Bundle.module).resizable().scaledToFit()
-                    Image("\(upperCurrentIndex)up").resizable().scaledToFit()
+                    Image("\(nextIndex)up", bundle: .module).resizable().scaledToFit()
+                    Image("\(upperCurrentIndex)up", bundle: .module).resizable().scaledToFit()
                         .rotation3DEffect(Angle(degrees: (upAnim && (nextIndex != fromIndex))  ? -89.99 : 0),
                                           axis: (x:1,y:0,z:0), anchor: .bottom, anchorZ: 0, perspective: 0.1)
                 }
                 ZStack {
-                    Image("\(lowerCurrentIndex)down").resizable().scaledToFit()
-                    Image("\(nextIndex)down").resizable().scaledToFit()
+                    Image("\(lowerCurrentIndex)down", bundle: .module).resizable().scaledToFit()
+                    Image("\(nextIndex)down", bundle: .module).resizable().scaledToFit()
                         .rotation3DEffect(Angle(degrees: (downAnim && (nextIndex != fromIndex)) ? 0 : 89.99),
                                       axis: (x:1,y:0,z:0), anchor: .top, anchorZ: 0, perspective: 0.1)
                 }
