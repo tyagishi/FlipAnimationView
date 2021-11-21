@@ -7,30 +7,7 @@
 
 import SwiftUI
 
-public class FlipViewModel: FlipViewSource {
-    let range: ClosedRange<Int>
-    
-    public init(_ initial: Int, range: ClosedRange<Int> = 0...9) {
-        self.range = range
-        super.init(initial)
-    }
-    
-    public func incrementIndex() -> Bool {
-        let index = value + 1
-        let overflow = index > range.upperBound
-        self.value = overflow ? range.lowerBound : index
-        return overflow
-    }
 
-    func prevIndex(_ current:Int) -> Int {
-        let prev = current - 1
-        return prev < range.lowerBound ? range.upperBound : prev
-    }
-    func nextIndex(_ current:Int) -> Int {
-        let next = current + 1
-        return next > range.upperBound ? range.lowerBound : next
-    }
-}
 
 public struct TwoDigitFlipView: View {
     @ObservedObject var viewModel: FlipViewModel

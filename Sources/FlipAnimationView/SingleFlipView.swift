@@ -8,22 +8,48 @@
 import SwiftUI
 
 extension Int {
-    var firstDigit: Int {
+    public var firstDigit: Int {
         let reminder = self % 10
         return reminder
     }
-    var secondDigit: Int {
+    public var secondDigit: Int {
         let reminder = Int(Double(self) / 10.0) % 10
         return reminder
     }
 }
 
 public class FlipViewSource:ObservableObject {
-    @Published var value:Int
+    @Published public var value:Int
     public init(_ initial: Int) {
         self.value = initial
     }
 }
+
+public class FlipViewModel: FlipViewSource {
+    let range: ClosedRange<Int>
+    
+    public init(_ initial: Int, range: ClosedRange<Int> = 0...9) {
+        self.range = range
+        super.init(initial)
+    }
+    
+    public func incrementIndex() -> Bool {
+        let index = value + 1
+        let overflow = index > range.upperBound
+        self.value = overflow ? range.lowerBound : index
+        return overflow
+    }
+
+    public func prevIndex(_ current:Int) -> Int {
+        let prev = current - 1
+        return prev < range.lowerBound ? range.upperBound : prev
+    }
+    func nextIndex(_ current:Int) -> Int {
+        let next = current + 1
+        return next > range.upperBound ? range.lowerBound : next
+    }
+}
+
 public struct SingleFlipView: View {
     @ObservedObject var viewModel: FlipViewSource
 
