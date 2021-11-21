@@ -84,7 +84,7 @@ public struct SingleFlipView: View {
         VStack {
             VStack(spacing:0) {
                 ZStack {
-                    Image("\(nextIndex)up").resizable().scaledToFit()
+                    Image("\(nextIndex)up", bundle: Bundle.module).resizable().scaledToFit()
                     Image("\(upperCurrentIndex)up").resizable().scaledToFit()
                         .rotation3DEffect(Angle(degrees: (upAnim && (nextIndex != fromIndex))  ? -89.99 : 0),
                                           axis: (x:1,y:0,z:0), anchor: .bottom, anchorZ: 0, perspective: 0.1)
