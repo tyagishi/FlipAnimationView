@@ -87,13 +87,13 @@ public struct SingleFlipView: View {
                     Image("L\(nextIndex)_01", bundle: .module).resizable().scaledToFit()
                     Image("L\(upperCurrentIndex)_01", bundle: .module).resizable().scaledToFit()
                         .rotation3DEffect(Angle(degrees: (upAnim && (nextIndex != fromIndex))  ? -89.99 : 0),
-                                          axis: (x:1,y:0,z:0), anchor: .bottom, anchorZ: 0, perspective: 0.1)
+                                          axis: (x:1,y:0,z:0), anchor: .bottom, anchorZ: 0, perspective: 0.05)
                 }
                 ZStack {
                     Image("L\(lowerCurrentIndex)_02", bundle: .module).resizable().scaledToFit()
                     Image("L\(nextIndex)_02", bundle: .module).resizable().scaledToFit()
                         .rotation3DEffect(Angle(degrees: (downAnim && (nextIndex != fromIndex)) ? 0 : 89.99),
-                                      axis: (x:1,y:0,z:0), anchor: .top, anchorZ: 0, perspective: 0.1)
+                                      axis: (x:1,y:0,z:0), anchor: .top, anchorZ: 0, perspective: 0.05)
                 }
             }
             .onReceive(viewModel.$value) { _ in
