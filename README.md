@@ -14,10 +14,8 @@ comment
 
 Flip animation for showing numbers
 
-
 ## in 30sec
 ![in30Sec](https://user-images.githubusercontent.com/6419800/142805791-f1b32079-00c9-48fd-9a88-a431dbdbb69d.gif)
-## in 30sec
 
 ## Code Example
 ```
