@@ -26,8 +26,8 @@ Flip animation for showing numbers
 //  © 2021  SmallDeskSoftware
 //
 
-import FlipAnimationView
 import SwiftUI
+import FlipAnimationView
 
 struct ContentView: View {
     @StateObject var viewModel: FlipViewModel = FlipViewModel(0, range: 0...6)
