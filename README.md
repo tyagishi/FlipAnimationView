@@ -14,9 +14,8 @@ comment
 
 Flip animation for showing numbers
 
-
-## 30sec
-video will come
+## in 30sec
+![in30Sec](https://user-images.githubusercontent.com/6419800/142805791-f1b32079-00c9-48fd-9a88-a431dbdbb69d.gif)
 
 ## Code Example
 ```
@@ -27,8 +26,8 @@ video will come
 //  © 2021  SmallDeskSoftware
 //
 
-import FlipAnimationView
 import SwiftUI
+import FlipAnimationView
 
 struct ContentView: View {
     @StateObject var viewModel: FlipViewModel = FlipViewModel(0, range: 0...6)
