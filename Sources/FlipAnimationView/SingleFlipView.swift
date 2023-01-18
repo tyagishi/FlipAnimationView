@@ -57,6 +57,8 @@ public struct SingleFlipView: View {
     let fromIndex: Int
     let animationDuration: Double
 
+    @State private var initialAnim: Double = 0.5
+
     public init(_ nextIndex: Int,_ fromIndex: Int,_ viewModel: FlipViewSource, duration: Double = 0.3) {
         self.nextIndex = nextIndex
         self.fromIndex = fromIndex
@@ -67,46 +69,34 @@ public struct SingleFlipView: View {
     @State private var upAnim = false
     @State private var downAnim = false
 
-    var upperCurrentIndex: Int {
-        if !upAnim {
-            return nextIndex
-        }
-        return fromIndex
-    }
-    var lowerCurrentIndex: Int {
-        if upAnim || downAnim {
-            return fromIndex
-        }
-        return nextIndex
-    }
-    
     public var body: some View {
+        //let _ = { print("SingleFlipView"); Self._printChanges() }() // need macOS 12 or above
         VStack {
             VStack(spacing:0) {
                 ZStack {
                     Image("L\(nextIndex)_01", bundle: .module).resizable().scaledToFit()
-                    Image("L\(upperCurrentIndex)_01", bundle: .module).resizable().scaledToFit()
-                        .rotation3DEffect(Angle(degrees: (upAnim && (nextIndex != fromIndex))  ? -89.99 : 0),
+                    Image("L\(fromIndex)_01", bundle: .module).resizable().scaledToFit()
+                        .rotation3DEffect(Angle(degrees: upAnim ? -89.99 : 0),
                                           axis: (x:1,y:0,z:0), anchor: .bottom, anchorZ: 0, perspective: 0.05)
                 }
                 ZStack {
-                    Image("L\(lowerCurrentIndex)_02", bundle: .module).resizable().scaledToFit()
+                    Image("L\(fromIndex)_02", bundle: .module).resizable().scaledToFit()
                     Image("L\(nextIndex)_02", bundle: .module).resizable().scaledToFit()
-                        .rotation3DEffect(Angle(degrees: (downAnim && (nextIndex != fromIndex)) ? 0 : 89.99),
-                                      axis: (x:1,y:0,z:0), anchor: .top, anchorZ: 0, perspective: 0.05)
+                        .rotation3DEffect(Angle(degrees: downAnim ? 0 : 89.99),
+                                          axis: (x:1,y:0,z:0), anchor: .top, anchorZ: 0, perspective: 0.05)
+                        .zIndex(1.0)
                 }
             }
             .onReceive(viewModel.$value) { _ in
-                withAnimation(Animation.linear(duration: animationDuration)){
+                upAnim = false
+                downAnim = false
+                withAnimation(Animation.linear(duration: animationDuration/2.0)){
                     upAnim = true
                 }
-                DispatchQueue.main.asyncAfter(deadline: .now()+animationDuration) {
-                    upAnim = false
-                    withAnimation(Animation.linear(duration: animationDuration)) {
+                DispatchQueue.main.asyncAfter(deadline: .now()+animationDuration/2.0+initialAnim) {
+                    withAnimation(Animation.linear(duration: animationDuration/2.0)){
                         downAnim = true
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now()+animationDuration) {
-                        downAnim = false
+                        initialAnim = 0.0
                     }
                 }
             }
