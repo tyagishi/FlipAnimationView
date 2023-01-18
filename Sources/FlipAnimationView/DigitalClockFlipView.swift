@@ -48,16 +48,16 @@ public struct DigitalClockView: View {
     public var body: some View {
         HStack(spacing: 5) {
             HStack(spacing: 1) {
-                SingleFlipView(viewModel.hourDigit.secondDigit, viewModel.lastHourDigit.secondDigit, viewModel, duration: 0.3)
-                SingleFlipView(viewModel.hourDigit.firstDigit, viewModel.lastHourDigit.firstDigit, viewModel, duration: 0.3)
+                SingleFlipView(viewModel.hourDigit.secondDigit, viewModel.lastHourDigit.secondDigit, viewModel, duration: 0.6)
+                SingleFlipView(viewModel.hourDigit.firstDigit, viewModel.lastHourDigit.firstDigit, viewModel, duration: 0.6)
             }
             HStack(spacing: 1) {
-                SingleFlipView(viewModel.minuteDigit.secondDigit, viewModel.lastMinuteDigit.secondDigit, viewModel, duration: 0.3)
-                SingleFlipView(viewModel.minuteDigit.firstDigit, viewModel.lastMinuteDigit.firstDigit, viewModel, duration: 0.3)
+                SingleFlipView(viewModel.minuteDigit.secondDigit, viewModel.lastMinuteDigit.secondDigit, viewModel, duration: 0.6)
+                SingleFlipView(viewModel.minuteDigit.firstDigit, viewModel.lastMinuteDigit.firstDigit, viewModel, duration: 0.6)
             }
             HStack(spacing: 1) {
-                SingleFlipView(viewModel.secondDigit.secondDigit, viewModel.lastSecondDigit.secondDigit, viewModel, duration: 0.3)
-                SingleFlipView(viewModel.secondDigit.firstDigit, viewModel.lastSecondDigit.firstDigit, viewModel, duration: 0.3)
+                SingleFlipView(viewModel.secondDigit.secondDigit, viewModel.lastSecondDigit.secondDigit, viewModel, duration: 0.6)
+                SingleFlipView(viewModel.secondDigit.firstDigit, viewModel.lastSecondDigit.firstDigit, viewModel, duration: 0.6)
             }
 
         }

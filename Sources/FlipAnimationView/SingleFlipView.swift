@@ -76,13 +76,13 @@ public struct SingleFlipView: View {
                 ZStack {
                     Image("L\(nextIndex)_01", bundle: .module).resizable().scaledToFit()
                     Image("L\(fromIndex)_01", bundle: .module).resizable().scaledToFit()
-                        .rotation3DEffect(Angle(degrees: upAnim ? -89.99 : 0),
+                        .rotation3DEffect(Angle(degrees: (upAnim && (nextIndex != fromIndex)) ? -89.99 : 0),
                                           axis: (x:1,y:0,z:0), anchor: .bottom, anchorZ: 0, perspective: 0.05)
                 }
                 ZStack {
                     Image("L\(fromIndex)_02", bundle: .module).resizable().scaledToFit()
                     Image("L\(nextIndex)_02", bundle: .module).resizable().scaledToFit()
-                        .rotation3DEffect(Angle(degrees: downAnim ? 0 : 89.99),
+                        .rotation3DEffect(Angle(degrees: ( downAnim && (nextIndex != fromIndex)) ? 0 : 89.99),
                                           axis: (x:1,y:0,z:0), anchor: .top, anchorZ: 0, perspective: 0.05)
                         .zIndex(1.0)
                 }
