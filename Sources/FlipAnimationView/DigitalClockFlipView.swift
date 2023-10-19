@@ -11,6 +11,12 @@ import SwiftUI
 public class ClockViewModel: FlipViewSource {
     var cancellable: AnyCancellable? = nil
 
+    public enum ClockSecondSize {
+        case noShow, half, normal
+    }
+
+    public var secondSize: ClockSecondSize = .normal
+
     public init() {
         super.init(Int(Date().timeIntervalSinceReferenceDate))
         setupTimer()
@@ -46,22 +52,35 @@ public struct DigitalClockView: View {
     }
 
     public var body: some View {
-        HStack(spacing: 5) {
-            HStack(spacing: 1) {
-                SingleFlipView(viewModel.hourDigit.secondDigit, viewModel.lastHourDigit.secondDigit, viewModel, duration: 0.6)
-                SingleFlipView(viewModel.hourDigit.firstDigit, viewModel.lastHourDigit.firstDigit, viewModel, duration: 0.6)
+        GeometryReader { geom in
+            HStack(alignment: .firstTextBaseline, spacing: 5) {
+                HStack(spacing: 1) {
+                    SingleFlipView(viewModel.hourDigit.secondDigit, viewModel.lastHourDigit.secondDigit, viewModel, duration: 0.6)
+                    SingleFlipView(viewModel.hourDigit.firstDigit, viewModel.lastHourDigit.firstDigit, viewModel, duration: 0.6)
+                }
+                .frame(width: geom.size.width/3)
+                HStack(spacing: 1) {
+                    SingleFlipView(viewModel.minuteDigit.secondDigit, viewModel.lastMinuteDigit.secondDigit, viewModel, duration: 0.6)
+                    SingleFlipView(viewModel.minuteDigit.firstDigit, viewModel.lastMinuteDigit.firstDigit, viewModel, duration: 0.6)
+                }
+                .frame(width: geom.size.width/3)
+                if viewModel.secondSize != .noShow {
+                    HStack(spacing: 1) {
+                        SingleFlipView(viewModel.secondDigit.secondDigit, viewModel.lastSecondDigit.secondDigit, viewModel, duration: 0.6)
+                        SingleFlipView(viewModel.secondDigit.firstDigit, viewModel.lastSecondDigit.firstDigit, viewModel, duration: 0.6)
+                    }
+                    .frame(width: secondWidth(geom.size.width))
+                }
             }
-            HStack(spacing: 1) {
-                SingleFlipView(viewModel.minuteDigit.secondDigit, viewModel.lastMinuteDigit.secondDigit, viewModel, duration: 0.6)
-                SingleFlipView(viewModel.minuteDigit.firstDigit, viewModel.lastMinuteDigit.firstDigit, viewModel, duration: 0.6)
-            }
-            HStack(spacing: 1) {
-                SingleFlipView(viewModel.secondDigit.secondDigit, viewModel.lastSecondDigit.secondDigit, viewModel, duration: 0.6)
-                SingleFlipView(viewModel.secondDigit.firstDigit, viewModel.lastSecondDigit.firstDigit, viewModel, duration: 0.6)
-            }
-
         }
-        
+    }
+    
+    func secondWidth(_ width: CGFloat) -> CGFloat {
+        switch viewModel.secondSize {
+        case .noShow: return 1
+        case .half: return width / 6
+        case .normal: return width / 3
+        }
     }
     
 }
