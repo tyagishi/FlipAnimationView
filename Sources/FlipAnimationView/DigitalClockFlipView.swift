@@ -15,7 +15,7 @@ public class ClockViewModel: FlipViewSource {
         case noShow, half, normal
     }
 
-    public var secondSize: ClockSecondSize = .normal
+    @Published public var secondSize: ClockSecondSize = .normal
 
     public init() {
         super.init(Int(Date().timeIntervalSinceReferenceDate))
