@@ -18,7 +18,7 @@ public class ClockViewModel: FlipViewSource {
     @Published public var secondSize: ClockSecondSize = .normal
 
     public init() {
-        super.init(Int(Date().timeIntervalSinceReferenceDate))
+        super.init(Int(Date().timeIntervalSinceReferenceDate), range: 0...Int.max)
         setupTimer()
     }
     

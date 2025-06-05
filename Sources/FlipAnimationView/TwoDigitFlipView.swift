@@ -7,21 +7,19 @@
 
 import SwiftUI
 
-
-
-public struct TwoDigitFlipView: View {
-    @ObservedObject var viewModel: FlipViewModel
+public struct TwoDigitFlipView<T: FlipViewSourceProtocol & ObservableObject>: View {
+    @ObservedObject var viewModel: T
     let animationDuration: Double
 
-    public init(_ viewModel: FlipViewModel, duration: Double = 0.3) {
+    public init(_ viewModel: T, duration: Double = 0.3) {
         self.viewModel = viewModel
         self.animationDuration = duration
     }
 
     public var body: some View {
         HStack(spacing: 1) {
-            SingleFlipView(viewModel.value.secondDigit, viewModel.prevIndex(viewModel.value).secondDigit, viewModel, duration: animationDuration)
-            SingleFlipView(viewModel.value.firstDigit, viewModel.prevIndex(viewModel.value).firstDigit, viewModel, duration: animationDuration)
+            SingleFlipView(viewModel.value.digit(at: 1), viewModel.prevIndex(viewModel.value).digit(at: 1), viewModel, duration: animationDuration)
+            SingleFlipView(viewModel.value.digit(at: 0), viewModel.prevIndex(viewModel.value).digit(at: 0), viewModel, duration: animationDuration)
         }
     }
 }

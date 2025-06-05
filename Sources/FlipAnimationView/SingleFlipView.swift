@@ -8,6 +8,14 @@
 import SwiftUI
 
 extension Int {
+    public func digit(at: Int) -> Int {
+//        guard self > Int(pow(10.0, Double(at))) else { return 0 }
+        // get 1 from 4123 (at: 2)
+        let remain = self % Int(pow(10.0, Double(at+1)))
+        let num = Int(remain) / Int(pow(10.0, Double(at)))
+        return num
+    }
+
     public var firstDigit: Int {
         let reminder = self % 10
         return reminder
@@ -18,19 +26,45 @@ extension Int {
     }
 }
 
-public class FlipViewSource:ObservableObject {
+public protocol FlipViewSourceProtocol {
+    var value:Int { get set }
+    var range: ClosedRange<Int> { get }
+    func prevIndex(_ current:Int) -> Int
+    func nextIndex(_ current:Int) -> Int
+    
+    func digit(at: Int) -> Int
+}
+
+public class FlipViewSource: ObservableObject, FlipViewSourceProtocol {
     @Published public var value:Int
-    public init(_ initial: Int) {
+    public let range: ClosedRange<Int>
+
+    public init(_ initial: Int, range: ClosedRange<Int>) {
         self.value = initial
+        self.range = range
     }
 }
 
-public class FlipViewModel: FlipViewSource {
-    let range: ClosedRange<Int>
+extension FlipViewSourceProtocol {
+    public func prevIndex(_ current:Int) -> Int {
+        let prev = current - 1
+        return prev < range.lowerBound ? range.upperBound : prev
+    }
+    public func nextIndex(_ current:Int) -> Int {
+        let next = current + 1
+        return next > range.upperBound ? range.lowerBound : next
+    }
+    public func digit(at: Int) -> Int { fatalError("not implemented") }
+}
+
+
+public class FlipViewModel: FlipViewSourceProtocol, ObservableObject {
+    @Published public var value: Int
+    public let range: ClosedRange<Int>
     
     public init(_ initial: Int, range: ClosedRange<Int> = 0...9) {
+        self.value = initial
         self.range = range
-        super.init(initial)
     }
     
     public func incrementIndex() -> Bool {
@@ -44,14 +78,14 @@ public class FlipViewModel: FlipViewSource {
         let prev = current - 1
         return prev < range.lowerBound ? range.upperBound : prev
     }
-    func nextIndex(_ current:Int) -> Int {
+    public func nextIndex(_ current:Int) -> Int {
         let next = current + 1
         return next > range.upperBound ? range.lowerBound : next
     }
 }
 
-public struct SingleFlipView: View {
-    @ObservedObject var viewModel: FlipViewSource
+public struct SingleFlipView<T: FlipViewSourceProtocol & ObservableObject>: View {
+    @ObservedObject var viewModel: T
 
     let nextIndex: Int
     let fromIndex: Int
@@ -59,9 +93,15 @@ public struct SingleFlipView: View {
 
     @State private var initialAnim: Double = 0.5
 
-    public init(_ nextIndex: Int,_ fromIndex: Int,_ viewModel: FlipViewSource, duration: Double = 0.3) {
+    public init(_ nextIndex: Int,_ fromIndex: Int,_ viewModel: T, duration: Double = 0.3) {
         self.nextIndex = nextIndex
         self.fromIndex = fromIndex
+        self.viewModel = viewModel
+        self.animationDuration = duration
+    }
+    public init(_ viewModel: T, duration: Double = 0.3) {
+        self.nextIndex = viewModel.value
+        self.fromIndex = viewModel.prevIndex(viewModel.value)
         self.viewModel = viewModel
         self.animationDuration = duration
     }
@@ -87,18 +127,27 @@ public struct SingleFlipView: View {
                         .zIndex(1.0)
                 }
             }
-            .onReceive(viewModel.$value) { _ in
-                upAnim = false
-                downAnim = false
-                withAnimation(Animation.linear(duration: animationDuration/2.0)){
-                    upAnim = true
-                }
-                DispatchQueue.main.asyncAfter(deadline: .now()+animationDuration/2.0+initialAnim) {
-                    withAnimation(Animation.linear(duration: animationDuration/2.0)){
-                        downAnim = true
-                        initialAnim = 0.0
-                    }
-                }
+            .onAppear {
+                print("onAppear")
+                animate()
+            }
+            .onChange(of: viewModel.value, perform: { _ in
+                print("onChange")
+                animate()
+            })
+        }
+    }
+    
+    func animate() {
+        upAnim = false
+        downAnim = false
+        withAnimation(Animation.linear(duration: animationDuration/2.0)){
+            upAnim = true
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now()+animationDuration/2.0+initialAnim) {
+            withAnimation(Animation.linear(duration: animationDuration/2.0)){
+                downAnim = true
+                initialAnim = 0.0
             }
         }
     }
