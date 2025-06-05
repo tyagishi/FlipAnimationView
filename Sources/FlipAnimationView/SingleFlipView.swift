@@ -128,11 +128,9 @@ public struct SingleFlipView<T: FlipViewSourceProtocol & ObservableObject>: View
                 }
             }
             .onAppear {
-                print("onAppear")
                 animate()
             }
             .onChange(of: viewModel.value, perform: { _ in
-                print("onChange")
                 animate()
             })
         }
