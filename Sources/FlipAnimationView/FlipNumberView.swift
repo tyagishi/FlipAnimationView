@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public struct CurrentNextNumber: NumberForFlip {
+public struct FlipNumberPair: NumberForFlip {
     public var current: Int
     public var next: Int
     public init(_ current: Int,_ next: Int) {
@@ -16,18 +16,24 @@ public struct CurrentNextNumber: NumberForFlip {
     }
     // note: index starts from 0 and from right
     // i.e. for 12345,   index = 0, means 5, index=3 means 2
-    public func currentNextDigit(at index: Int) -> CurrentNextNumber {
-        return CurrentNextNumber(current.digit(at: index), next.digit(at: index))
+    public func flipNumberPair(at index: Int) -> FlipNumberPair {
+        return FlipNumberPair(current.digit(at: index), next.digit(at: index))
     }
-    public func updated(_ diff: Int) -> CurrentNextNumber {
-        return CurrentNextNumber(self.current + diff, self.next + diff)
+    public func adjust(_ diff: Int) -> FlipNumberPair {
+        return FlipNumberPair(self.current + diff, self.next + diff)
+    }
+}
+
+extension FlipNumberPair: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        "current: \(current) next: \(next)"
     }
 }
 
 public protocol NumberForFlip: Equatable {
     var current: Int { get }
     var next: Int { get }
-    func currentNextDigit(at: Int) -> Self
+    func flipNumberPair(at: Int) -> Self
 }
 
 public struct FlipNumberView<T>: View where T: NumberForFlip {
@@ -67,7 +73,7 @@ public struct SingleFlipNumberView<T>: View where T: NumberForFlip{
     public var body: some View {
         VStack {
             VStack(spacing:0) {
-                let displayDigit = currentNextNumber.currentNextDigit(at: digitIndex)
+                let displayDigit = currentNextNumber.flipNumberPair(at: digitIndex)
                 ZStack {
                     Image("L\(displayDigit.next)_01", bundle: .module).resizable().scaledToFit()
                     Image("L\(displayDigit.current)_01", bundle: .module).resizable().scaledToFit()
@@ -87,7 +93,7 @@ public struct SingleFlipNumberView<T>: View where T: NumberForFlip{
                 animate()
             }
             .onChange(of: currentNextNumber, perform: { new in
-                let displayDigit = currentNextNumber.currentNextDigit(at: digitIndex)
+                let displayDigit = currentNextNumber.flipNumberPair(at: digitIndex)
                 if displayDigit.current == displayDigit.next { return }
                 animate()
             })
