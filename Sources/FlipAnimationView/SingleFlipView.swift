@@ -6,6 +6,13 @@
 //
 
 import SwiftUI
+import OSLog
+
+extension OSLog {
+    //static let logger = Logger(subsystem: "com.smalldesksoftware", category: "FlipAnimationView")
+    static let logger = Logger(.disabled)
+}
+
 
 extension Int {
     public func digit(at: Int) -> Int {
@@ -87,8 +94,8 @@ public class FlipViewModel: FlipViewSourceProtocol, ObservableObject {
 public struct SingleFlipView<T: FlipViewSourceProtocol & ObservableObject>: View {
     @ObservedObject var viewModel: T
 
-    let nextIndex: Int
-    let fromIndex: Int
+    @State private var nextIndex: Int
+    @State private var fromIndex: Int
     let animationDuration: Double
 
     @State private var initialAnim: Double = 0.5
@@ -98,19 +105,21 @@ public struct SingleFlipView<T: FlipViewSourceProtocol & ObservableObject>: View
         self.fromIndex = fromIndex
         self.viewModel = viewModel
         self.animationDuration = duration
+        OSLog.logger.debug(">>> SingleFlipView init next: \(nextIndex) from: \(fromIndex)")
     }
     public init(_ viewModel: T, duration: Double = 0.3) {
         self.nextIndex = viewModel.value
         self.fromIndex = viewModel.prevIndex(viewModel.value)
         self.viewModel = viewModel
         self.animationDuration = duration
+        OSLog.logger.debug(">>> SingleFlipView init: \(viewModel.value), \(viewModel.prevIndex(viewModel.value))")
     }
 
     @State private var upAnim = false
     @State private var downAnim = false
 
     public var body: some View {
-        //let _ = { print("SingleFlipView"); Self._printChanges() }() // need macOS 12 or above
+        let _ = { OSLog.logger.debug("SingleFlipView from: \(fromIndex) next: \(nextIndex)')"); }// Self._printChanges() }() // need macOS 12 or above
         VStack {
             VStack(spacing:0) {
                 ZStack {
@@ -118,19 +127,21 @@ public struct SingleFlipView<T: FlipViewSourceProtocol & ObservableObject>: View
                     Image("L\(fromIndex)_01", bundle: .module).resizable().scaledToFit()
                         .rotation3DEffect(Angle(degrees: (upAnim && (nextIndex != fromIndex)) ? -89.99 : 0),
                                           axis: (x:1,y:0,z:0), anchor: .bottom, anchorZ: 0, perspective: 0.05)
+                        .opacity((upAnim && downAnim) ? 0.0 : 1.0 )
                 }
                 ZStack {
                     Image("L\(fromIndex)_02", bundle: .module).resizable().scaledToFit()
+                        .opacity((upAnim && downAnim) ? 0.0 : 1.0 )
                     Image("L\(nextIndex)_02", bundle: .module).resizable().scaledToFit()
                         .rotation3DEffect(Angle(degrees: ( downAnim && (nextIndex != fromIndex)) ? 0 : 89.99),
                                           axis: (x:1,y:0,z:0), anchor: .top, anchorZ: 0, perspective: 0.05)
                         .zIndex(1.0)
                 }
             }
-            .onAppear {
-                animate()
-            }
             .onChange(of: viewModel.value, perform: { _ in
+                OSLog.logger.debug("viewModel.value changed to \(viewModel.value) with from: \(fromIndex) next: \(nextIndex)")
+                fromIndex = viewModel.prevIndex(viewModel.value)
+                nextIndex = viewModel.value
                 animate()
             })
         }
