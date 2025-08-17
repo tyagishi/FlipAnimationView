@@ -131,13 +131,16 @@ public struct SingleFlipView<T: FlipViewSourceProtocol & ObservableObject>: View
                 }
                 ZStack {
                     Image("L\(fromIndex)_02", bundle: .module).resizable().scaledToFit()
-                        .opacity((upAnim && downAnim) ? 0.0 : 1.0 )
+                        .opacity(( downAnim && (nextIndex != fromIndex)) ? 0.0 : 1.0 )
                     Image("L\(nextIndex)_02", bundle: .module).resizable().scaledToFit()
                         .rotation3DEffect(Angle(degrees: ( downAnim && (nextIndex != fromIndex)) ? 0 : 89.99),
                                           axis: (x:1,y:0,z:0), anchor: .top, anchorZ: 0, perspective: 0.05)
                         .zIndex(1.0)
                 }
             }
+            .onChange(of: viewModel.value, perform: { _ in
+                animate()
+            })
             .onChange(of: viewModel.value, perform: { _ in
                 OSLog.logger.debug("viewModel.value changed to \(viewModel.value) with from: \(fromIndex) next: \(nextIndex)")
                 fromIndex = viewModel.prevIndex(viewModel.value)
