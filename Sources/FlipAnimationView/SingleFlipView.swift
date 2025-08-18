@@ -9,8 +9,8 @@ import SwiftUI
 import OSLog
 
 extension OSLog {
-    //static let logger = Logger(subsystem: "com.smalldesksoftware", category: "FlipAnimationView")
-    static let logger = Logger(.disabled)
+    //static private let logger = Logger(subsystem: "com.smalldesksoftware", category: "FlipAnimationView")
+    static fileprivate let logger = Logger(.disabled)
 }
 
 
